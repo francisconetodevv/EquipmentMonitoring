@@ -51,7 +51,7 @@ Este sistema simula e gerencia o monitoramento de diversos equipamentos industri
 - **Backend**: ASP.NET Core
 - **Frontend**: Blazor
 - **Arquitetura**: Clean Architecture
-- **Banco de Dados**: [A ser definido]
+- **Banco de Dados**: SQL Server
 
 ## 📦 Estrutura do Projeto
 
@@ -66,7 +66,7 @@ Este sistema simula e gerencia o monitoramento de diversos equipamentos industri
 
 ## 📄 Licença
 
-Este projeto está sob a licença [tipo de licença]. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 👥 Contribuição
 
