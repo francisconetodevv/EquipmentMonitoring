@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IndustrialMonitoring.Core.Enums;
 
 namespace IndustrialMonitoring.Core.Entities
 {
@@ -26,13 +27,6 @@ namespace IndustrialMonitoring.Core.Entities
             Status = true;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
-            EquipmentList = new List<Equipment>();
-        }
-
-        // Construtor sem parâmetros para EF Core
-        protected Area() 
-        {
-            EquipmentList = new List<Equipment>();
         }
 
         // Automatic
@@ -45,8 +39,6 @@ namespace IndustrialMonitoring.Core.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        // Perguntar o por que?
-        // Lista protegida - não pode ser alterada diretamente
         private readonly List<Equipment> _equipmentList = new();
         public IReadOnlyCollection<Equipment> EquipmentList => _equipmentList.AsReadOnly();
 
@@ -143,7 +135,7 @@ namespace IndustrialMonitoring.Core.Entities
             UpdatedAt = DateTime.UtcNow;
         }
         
-        // Override para melhor debugging
+        // Override to best debbuging
         public override string ToString()
         {
             return $"{CodArea} - {Name} ({GetTotalEquipments()} equipamentos)";
