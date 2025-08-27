@@ -52,14 +52,6 @@ namespace IndustrialMonitoring.Core.Entities
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
 
-            _sensors = new List<Sensor>();
-            _maintenanceRecords = new List<MaintenanceRecord>();
-        }
-
-        protected Equipment()
-        {
-            _sensors = new List<Sensor>();
-            _maintenanceRecords = new List<MaintenanceRecord>();
         }
 
         public int Id { get; private set; }
@@ -80,5 +72,78 @@ namespace IndustrialMonitoring.Core.Entities
 
         public IReadOnlyCollection<Sensor> Sensors => _sensors.AsReadOnly();
         public IReadOnlyCollection<MaintenanceRecord> MaintenanceRecords => _maintenanceRecords.AsReadOnly();
+
+
+        public bool AddSensor(Sensor sensor)
+        {
+
+        }
+
+        public bool RemoveSensor(Sensor sensor)
+        {
+
+        }
+
+        public void Start()
+        {
+
+        }
+
+        public void Stop()
+        {
+
+        }
+
+        public void SetMaintenance()
+        {
+
+        }
+
+        public void SetFault()
+        {
+
+        }
+
+        public int GetOperationalDays()
+        {
+
+        }
+
+        public DateTime? GetNextMaintenanceDate()
+        {
+
+        }
+
+        // Consultas de Estado
+        public bool IsOperational()
+        {
+
+        }
+
+        public bool HasActiveSensors()
+        {
+
+        }
+
+        public bool NeedsMaintenance()
+        {
+
+        }
+
+        public int GetMaintenanceCount()
+        {
+
+        }
+
+        // Validações de negócio
+        public bool CanStart()
+        {
+
+        }
+
+        public bool CanReceiveMaintenance()
+        {
+            
+        }
     }
 }
