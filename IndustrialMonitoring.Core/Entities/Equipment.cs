@@ -67,6 +67,7 @@ namespace IndustrialMonitoring.Core.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
+        // List of sensors
         private readonly List<Sensor> _sensors = new();
         private readonly List<MaintenanceRecord> _maintenanceRecords = new();
 
@@ -76,17 +77,60 @@ namespace IndustrialMonitoring.Core.Entities
 
         public bool AddSensor(Sensor sensor)
         {
+            int MaxSensorsPerEquipment = 10;
 
+            if (sensor == null)
+            {
+                throw new ArgumentNullException(nameof(sensor));
+            }
+
+            if (_sensors.Any(s => s.Id == sensor.Id))
+            {
+                return false;
+            }
+
+            if (Status == EquipmentStatus.Running)
+            {
+                return false;
+            }
+
+            if (_sensors.Count > MaxSensorsPerEquipment)
+            {
+                return false;
+            }
+
+            _sensors.Add(sensor);
+            UpdateTimestamp();
+
+            return true;
         }
 
         public bool RemoveSensor(Sensor sensor)
         {
+            if (sensor == null)
+            {
+                throw new ArgumentNullException(nameof(sensor));
+            }
 
+            if (Status == EquipmentStatus.Running)
+            {
+                return false;
+            }
+
+            UpdateTimestamp();
+            _sensors.Remove(sensor);
+
+            return true;
         }
 
         public void Start()
         {
+            if (Status == EquipmentStatus.Fault || Status == EquipmentStatus.Running)
+            {
+                //throw new ARgument
+            }
 
+            if ()
         }
 
         public void Stop()
@@ -143,7 +187,12 @@ namespace IndustrialMonitoring.Core.Entities
 
         public bool CanReceiveMaintenance()
         {
-            
+
+        }
+        
+        private void UpdateTimestamp()
+        {
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }
