@@ -8,6 +8,9 @@ namespace IndustrialMonitoring.Core.Entities
 {
     public class Equipment
     {
+        private const int MaxSensorsPerEquipment = 10;
+        private const int DefaultMaintenanceIntervalDays = 90;
+
         public Equipment(string name, string serialNumber, EquipmentType type, string manufacturer, string model, DateTime installationDate, int areaId)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -94,7 +97,7 @@ namespace IndustrialMonitoring.Core.Entities
                 return false;
             }
 
-            if (_sensors.Count > MaxSensorsPerEquipment)
+            if (_sensors.Count >= MaxSensorsPerEquipment)
             {
                 return false;
             }
@@ -125,74 +128,167 @@ namespace IndustrialMonitoring.Core.Entities
 
         public void Start()
         {
-            if (Status == EquipmentStatus.Fault || Status == EquipmentStatus.Running)
+            if (!CanStart())
             {
-                //throw new ARgument
+                throw new InvalidOperationException("O equipamento não pode ser inicado no estado atual.");
             }
 
-            if ()
+            Status = EquipmentStatus.Running;
+            UpdateTimestamp();
         }
 
         public void Stop()
         {
+            if (Status == EquipmentStatus.Maintenance)
+            {
+                throw new InvalidOperationException("Não é possível parar o equipamento em manutenção");
+            }
 
+            Status = EquipmentStatus.Stopped;
+            UpdateTimestamp();
         }
 
         public void SetMaintenance()
         {
+            if (Status != EquipmentStatus.Stopped)
+            {
+                throw new InvalidOperationException("Equipamento deve estar parado para entrar em manutenção");
+            }
+
+            Status = EquipmentStatus.Maintenance;
+            UpdateTimestamp();
 
         }
 
         public void SetFault()
         {
-
+            Status = EquipmentStatus.Fault;
+            UpdateTimestamp();
         }
 
         public int GetOperationalDays()
         {
+            if (InstallationDate > DateTime.Now)
+            {
+                return 0;
+            }
 
+            return (DateTime.Today - InstallationDate.Date).Days;
         }
 
         public DateTime? GetNextMaintenanceDate()
         {
+            var lastMaintenance = _maintenanceRecords.Where(m => m.CompletedDate.HasValue)
+                                                     .OrderByDescending(m => m.CompletedDate)
+                                                     .FirstOrDefault();
 
+            if (lastMaintenance?.CompletedDate != null)
+            {
+                return lastMaintenance.CompletedDate.Value.AddDays(DefaultMaintenanceIntervalDays);
+            }
+
+            return InstallationDate.AddDays(DefaultMaintenanceIntervalDays);
         }
 
-        // Consultas de Estado
+        // State consulting
         public bool IsOperational()
         {
+            if (Status == EquipmentStatus.Running)
+            {
+                return true;
+            }
 
+            return false;
         }
 
         public bool HasActiveSensors()
         {
-
+            return _sensors.Any(s => s.IsActive);
         }
 
         public bool NeedsMaintenance()
         {
+            if (GetNextMaintenanceDate().HasValue && GetNextMaintenanceDate().Value.Date < DateTime.Today)
+            {
+                return true;
+            }
 
+            return false;
+        }
+
+        public int GetSensorCount()
+        {
+            return _sensors.Count();
         }
 
         public int GetMaintenanceCount()
         {
-
+            return _maintenanceRecords.Count(m => m.CompletedDate.HasValue);
         }
 
-        // Validações de negócio
+        // Business validation
         public bool CanStart()
         {
+            if (Status == EquipmentStatus.Fault || Status == EquipmentStatus.Running)
+            {
+                return false;
+            }
 
+            if (!HasActiveSensors())
+            {
+                return false;
+            }
+
+            if (Area != null && !Area.IsActive)
+            {
+                return false;
+            }
+
+            var NextMaintenanceDate = GetNextMaintenanceDate();
+            if (NextMaintenanceDate.HasValue && NextMaintenanceDate.Value.AddDays(-30) < DateTime.Today)
+            {
+                return false;
+            }
+
+            return ValidateBusinessRules();
         }
 
         public bool CanReceiveMaintenance()
         {
+            if (Status != EquipmentStatus.Stopped)
+            {
+                return false;
+            }
 
+            return true;
         }
-        
+
         private void UpdateTimestamp()
         {
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        private bool ValidateStatusTransition(EquipmentStatus newStatus)
+        {
+            return newStatus switch
+            {
+                EquipmentStatus.Running => Status == EquipmentStatus.Stopped || Status == EquipmentStatus.Maintenance,
+                EquipmentStatus.Stopped => Status != EquipmentStatus.Maintenance,
+                EquipmentStatus.Maintenance => Status == EquipmentStatus.Stopped,
+                EquipmentStatus.Fault => true,
+                _ => false
+            };
+        }
+
+        public bool ValidateBusinessRules()
+        {
+            return true;
+        }
+        
+        public override string ToString()
+        {
+            var areaName = Area?.Name ?? "N/A";
+            return $"{Name} ({Status}) - Área: {areaName} - {_sensors.Count} sensores";
         }
     }
 }
