@@ -52,28 +52,28 @@ namespace IndustrialMonitoring.Core.Entities
             HighWarningLimit = null;
             LowWarningLimit = null;
         }
-        
+
         public int Id { get; private set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public SensorType Type { get; set; }
-        public string Unit { get; set; }
-        public decimal MinValue { get; set; }
-        public decimal MaxValue { get; set; }
-        public int Precision { get; set; }
-        public bool IsActive { get; set; }
-        public SensorStatus Status { get; set; }
-        public decimal? LastReadingValue { get; set; }
-        public DateTime? LastReadingDate { get; set; }
-        public decimal? HighAlarmLimit { get; set; }
-        public decimal? LowAlarmLimit { get; set; }
-        public decimal? HighWarningLimit { get; set; }
-        public decimal? LowWarningLimit { get; set; }
-        public int EquipmentId { get; set; }
-        public Equipment Equipment { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime? CalibrationDate { get; set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public SensorType Type { get; private set; }
+        public string Unit { get; private set; }
+        public decimal MinValue { get; private set; }
+        public decimal MaxValue { get; private set; }
+        public int Precision { get; private set; }
+        public bool IsActive { get; private set; }
+        public SensorStatus Status { get; private set; }
+        public decimal? LastReadingValue { get; private set; }
+        public DateTime? LastReadingDate { get; private set; }
+        public decimal? HighAlarmLimit { get; private set; }
+        public decimal? LowAlarmLimit { get; private set; }
+        public decimal? HighWarningLimit { get; private set; }
+        public decimal? LowWarningLimit { get; private set; }
+        public int EquipmentId { get; private set; }
+        public Equipment Equipment { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
+        public DateTime? CalibrationDate { get; private set; }
 
         private readonly List<SensorReading> _sensorReadings = new();
         private readonly List<Alarm> _alarms = new();
@@ -81,6 +81,91 @@ namespace IndustrialMonitoring.Core.Entities
         public IReadOnlyCollection<SensorReading> SensorReadings => _sensorReadings.AsReadOnly();
         public IReadOnlyCollection<Alarm> Alarm => _alarms.AsReadOnly();
 
+        public bool SetAlarmLimits(decimal? highAlarm, decimal? lowAlarm, decimal? highWarning, decimal? highWarning)
+        {
 
+        }
+
+        public bool AddReading(decimal value, DateTime timestamp)
+        {
+
+        }
+
+        public void Activate()
+        {
+
+        }
+
+        public void Deactivate()
+        {
+
+        }
+
+        public void SetFault(string reason)
+        {
+
+        }
+
+        public void StartCalibration()
+        {
+
+        }
+
+        public void FinishCalibration()
+        {
+
+        }
+
+        public decimal? GetAverageValue(DateTime startDate, DateTime endDate)
+        {
+
+        }
+
+        public decimal? GetMinValue(DateTime startDate, DateTime endDate)
+        {
+
+        }
+
+        public decimal? GetMaxValue(DateTime startDate, DateTime endDate)
+        {
+
+        }
+
+        public int GetReadingCount()
+        {
+
+        }
+
+        public TimeSpan? GetTimeSinceLastReading()
+        {
+
+        }
+
+        public bool IsCalibrationDue()
+        {
+
+        }
+
+        public bool CanReceiveReading()
+        {
+
+        }
+
+        public bool IsInAlarmStage()
+        {
+
+        }
+
+        public bool IsInWarningState()
+        {
+
+        }
+
+        public bool NeedsCalibration()
+        {
+
+        }
+
+        // Aux methods
     }
 }
