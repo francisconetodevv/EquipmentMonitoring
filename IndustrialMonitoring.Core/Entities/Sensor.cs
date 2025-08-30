@@ -8,6 +8,10 @@ namespace IndustrialMonitoring.Core.Entities
 {
     public class Sensor
     {
+        private const int DefaultCalibrationIntervalDays = 180;
+        private const int MaxPrecision = 4;
+        private const int MinPrecision = 0;
+
         public Sensor(string name, string description, SensorType type, string unit, decimal minValue, decimal maxValue, int precision, int equipmentId)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -81,19 +85,116 @@ namespace IndustrialMonitoring.Core.Entities
         public IReadOnlyCollection<SensorReading> SensorReadings => _sensorReadings.AsReadOnly();
         public IReadOnlyCollection<Alarm> Alarm => _alarms.AsReadOnly();
 
-        public bool SetAlarmLimits(decimal? highAlarm, decimal? lowAlarm, decimal? highWarning, decimal? highWarning)
+        public bool SetAlarmLimits(decimal? highAlarm, decimal? lowAlarm, decimal? highWarning, decimal? lowWarning)
         {
+            if (highAlarm.HasValue && (highAlarm.Value < MinValue || highAlarm.Value > MaxValue))
+            {
+                return false;
+            }
 
+            if (lowAlarm.HasValue && (lowAlarm.Value < MinValue || lowAlarm.Value > MaxValue))
+            {
+                return false;
+            }
+
+            if (lowAlarm.HasValue && highAlarm.HasValue && lowAlarm.Value >= highAlarm.Value)
+            {
+                return false;
+            }
+
+            if (highWarning.HasValue && highAlarm.HasValue && highWarning.Value >= highAlarm.Value)
+            {
+                return false;
+            }
+
+            if (lowWarning.HasValue && lowAlarm.HasValue && lowWarning.Value <= lowAlarm.Value)
+            {
+                return false;
+            }
+
+            if (highWarning.HasValue && (highWarning < MinValue || highWarning > MaxValue))
+            {
+                return false;
+            }
+
+            if (lowWarning.HasValue && (lowWarning < MinValue || lowWarning > MaxValue))
+            {
+                return false;
+            }
+
+            if (!IsActive)
+            {
+                return false;
+            }
+
+            HighWarningLimit = highWarning;
+            LowWarningLimit = lowWarning;
+            HighAlarmLimit = highAlarm;
+            LowAlarmLimit = lowAlarm;
+
+            UpdateTimestamp();
+            return true;
         }
 
         public bool AddReading(decimal value, DateTime timestamp)
         {
+            if (!CanReceiveReading())
+            {
+                return false;
+            }
 
+            if (timestamp > DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            if (LastReadingDate.HasValue && timestamp <= LastReadingDate.Value)
+            {
+                return false;
+            }
+
+            ValidateValueRange(value);
+
+            var roundedValue = RoundToPrecision(value);
+            var reading = new SensorReading(roundedValue, timestamp, Id);
+
+            _sensorReadings.Add(reading);
+
+            LastReadingValue = roundedValue;
+            LastReadingDate = timestamp;
+
+            CreateAlarmIfNeeded(roundedValue, timestamp);
+            Status = DetermineStatusByValue(roundedValue);
+
+            UpdateTimestamp();
+            return true;
+        }
+
+        public SensorReading GetLatestReading() {
+            return _sensorReadings.OrderByDescending(r => r.Timestamp).FirstOrDefault();
+        }
+
+        public IEnumerable<SensorReading> GetReadingsByPeriod(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > endDate)
+                throw new ArgumentException("Data inicial deve ser menor ou igual à data final");
+
+            return _sensorReadings
+                .Where(r => r.Timestamp >= startDate && r.Timestamp <= endDate)
+                .OrderBy(r => r.Timestamp)
+                .ToList();
         }
 
         public void Activate()
         {
+            if (Status == SensorStatus.Fault)
+            {
+                throw new InvalidOperationException("Sensor com falha não pode ser ativado");
+            }
 
+            IsActive = true;
+            Status = SensorStatus.Normal;
+            UpdateTimestamp();
         }
 
         public void Deactivate()
@@ -167,5 +268,39 @@ namespace IndustrialMonitoring.Core.Entities
         }
 
         // Aux methods
+        private void UpdateTimestamp()
+        {
+
+        }
+
+        private decimal RoundToPrecision(decimal value)
+        {
+
+        }
+
+        private SensorType DetermineStatusByValue(decimal value)
+        {
+
+        }
+
+        private void CreateAlarmIfNeeded(decimal value, DateTime timestamp)
+        {
+
+        }
+
+        private void ValidateValueRange(decimal value)
+        {
+
+        }
+
+        private bool IsWithinAlarmLimits(decimal value)
+        {
+
+        }
+
+        public override string ToString()
+        {
+            return $"{}"
+        }
     }
 }
