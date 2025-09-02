@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IndustrialMonitoring.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+16bba93ce009a1c78e4d8eb700e95854a0cf5547")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75e219a05b1c818a6977d653b8fdd9abdf1de479")]
 [assembly: System.Reflection.AssemblyProductAttribute("IndustrialMonitoring.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IndustrialMonitoring.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

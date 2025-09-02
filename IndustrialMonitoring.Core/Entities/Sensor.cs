@@ -199,17 +199,36 @@ namespace IndustrialMonitoring.Core.Entities
 
         public void Deactivate()
         {
-
+            IsActive = false;
+            Status = SensorStatus.Offline;
+            UpdateTimestamp();
         }
 
         public void SetFault(string reason)
         {
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                throw new ArgumentException("Motivo da falha é obrigatório", nameof(reason));
+            }
 
+            IsActive = false;
+            Status = SensorStatus.Fault;
+
+            var alarm = new Alarm($"Sensor em falha: {reason}", AlarmSeverity.High, DateTime.UtcNow, Id);
+            _alarms.Add(alarm);
+
+            UpdateTimestamp();
         }
 
         public void StartCalibration()
         {
+            if (!IsActive)
+            {
+                throw new InvalidOperationException("O sensor deve está ativo para calibração");
+            }
 
+            Status = SensorStatus.Calibrating;
+            UpdateTimestamp();
         }
 
         public void FinishCalibration()
