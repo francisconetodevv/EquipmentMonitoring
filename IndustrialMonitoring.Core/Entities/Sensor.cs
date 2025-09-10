@@ -233,7 +233,14 @@ namespace IndustrialMonitoring.Core.Entities
 
         public void FinishCalibration()
         {
+            if (Status != SensorStatus.Calibrating)
+            {
+                throw new InvalidOperationException("Sensor deve estar em calibração para finalizar");
+            }
 
+            Status = SensorStatus.Normal;
+            CalibrationDate = DateTime.UtcNow;
+            UpdateTimestamp();
         }
 
         public decimal? GetAverageValue(DateTime startDate, DateTime endDate)
