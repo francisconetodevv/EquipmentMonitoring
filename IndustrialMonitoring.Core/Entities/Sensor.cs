@@ -245,7 +245,7 @@ namespace IndustrialMonitoring.Core.Entities
 
         public decimal? GetAverageValue(DateTime startDate, DateTime endDate)
         {
-
+            
         }
 
         public decimal? GetMinValue(DateTime startDate, DateTime endDate)
