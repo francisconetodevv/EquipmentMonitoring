@@ -1,0 +1,76 @@
+# Created by https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudio,visualstudiocode,rider,resharper
+# Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,visualstudio,visualstudiocode,rider,resharper
+
+### .NET Core ###
+# Ignores files and directories related to .NET Core development.
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Project-specific files
+project.fragment.lock.json
+project.lock.json
+
+# User-specific files
+*.csproj.user
+*.dbmdl
+*.jfm
+*.user
+*.userprefs
+
+# Other
+.dockerignore
+.vs/
+.vscode/
+appsettings.Development.json
+secrets.json
+wwwroot/dist/
+
+# Nuget packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/[Pp]ackages/repositories.config
+
+# Tye
+.tye/
+
+# Rider
+.idea/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+*.[Tt]estsettings
+
+# Visual Studio Fakes
+*.fakes
+
+# F#
+.fake/
+
+# Paket
+.paket/paket.exe
+paket-files/
+
+# Cake
+tools/
+
+# PowerShell
+*.ps1.bk
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
